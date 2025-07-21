@@ -2,11 +2,9 @@ import QuestionCard from '@/components/QuestionCard.vue'
 import WelcomeView from '@/views/WelcomeView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
- 
     {
       path: '/',
       name: 'home',
@@ -24,10 +22,13 @@ const router = createRouter({
       component: () => import('../views/AboutView.vue'),
     },
     {
-      path:'/quiz',
-      component: QuestionCard
-    }
+      path: '/quiz',
+      component: QuestionCard,
+    },
   ],
+  scrollBehavior() {
+    return { top: 0 }
+  },
 })
 
 export default router

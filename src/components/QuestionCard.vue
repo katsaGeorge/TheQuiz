@@ -1,34 +1,27 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-tr from-green-400 to-blue-500 flex justify-center items-center px-4 py-8">
+  <div
+    class="min-h-screen bg-gradient-to-tr from-green-400 to-blue-500 flex justify-center items-center px-4 py-8"
+  >
     <div class="bg-white rounded-xl shadow-xl w-full max-w-2xl p-6 space-y-6">
-      
       <!-- Header -->
-       <div>
-        <h1 class="text-2xl font-bold text-gray-800 text-center mb-4">
-          Βρες τον Ποδοσφαιριστή!
-        </h1>
-        
-       </div>
-      <div class="flex justify-between items-center text-gray-700 font-semibold text-sm">
-        <div class="flex items-center gap-2">
-          🏆 Score: {{ score }} 
-        </div>
-        <div class="flex items-center gap-2">
-          ⏰ {{ timeLeft }}s
-        </div>
+      <div>
+        <h1 class="text-2xl font-bold text-gray-800 text-center mb-4">Βρες τον Ποδοσφαιριστή!</h1>
       </div>
-
-      
-
+      <div class="flex justify-between items-center text-gray-700 font-semibold text-sm">
+        <div class="flex items-center gap-2">🏆 Score: {{ score }}</div>
+        <div class="flex items-center gap-2">⏰ {{ timeLeft }}s</div>
+      </div>
 
       <!-- Question -->
       <div>
         <h2 class="text-lg font-bold text-gray-800 mb-4">
           {{ currentQuestion.question }}
         </h2>
-       <h6 class="inline-block text-sm bg-cyan-300 font-bold rounded-md text-gray-800 px-3 py-1 mb-4">
-        Πόντοι: {{ currentPoints }} 
-      </h6>
+        <h6
+          class="inline-block text-sm bg-cyan-300 font-bold rounded-md text-gray-800 px-3 py-1 mb-4"
+        >
+          Πόντοι: {{ currentPoints }}
+        </h6>
         <ul class="space-y-2 text-sm text-gray-800">
           <li
             v-for="(line, i) in currentQuestion.career"
@@ -39,19 +32,18 @@
           </li>
         </ul>
       </div>
-<div class="text-center">
-  <button
-    @click="toggleHint"
+      <div class="text-center">
+        <button
+          @click="toggleHint"
+          class="bg-green-400 hover:bg-green-600 text-white py-2 px-6 rounded-md cursor-pointer"
+        >
+          💡 Πάρε Βοήθεια
+        </button>
 
-     class="bg-green-400 hover:bg-green-600 text-white py-2 px-6 rounded-md cursor-pointer"
-  >
-    💡 Πάρε Βοήθεια
-  </button>
-
-  <p v-if="showHint" class="mt-2 text-sm text-gray-600">
-     {{ currentQuestion.hint }}
-  </p>
-</div>
+        <p v-if="showHint" class="mt-2 text-sm text-gray-600">
+          {{ currentQuestion.hint }}
+        </p>
+      </div>
       <!-- Input -->
       <div>
         <input
@@ -63,15 +55,16 @@
         />
         <button
           @click="submitAnswer"
-          class="mt-3 w-full bg-blue-500 text-white py-2  rounded-md hover:bg-blue-600 transition cursor-pointer"
+          :disabled="isSubmitDisabled"
+          class="mt-3 w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition cursor-pointer"
         >
           Υποβολή
         </button>
         <button
           @click="nextQuestion"
-          class="mt-3 w-full bg-amber-400 text-white py-2  rounded-md hover:bg-amber-600 transition cursor-pointer"
+          class="mt-3 w-full bg-amber-400 text-white py-2 rounded-md hover:bg-amber-600 transition cursor-pointer"
         >
-         Eπομένη Ερώτηση  
+          Eπομένη Ερώτηση
         </button>
       </div>
 
@@ -81,24 +74,26 @@
       </div>
 
       <!-- End of Quiz -->
-      <div v-if="quizFinished" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+      <div
+        v-if="quizFinished"
+        class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+      >
         <ModalQuizEnd
           :score="score"
           :questions="questions"
           @play-again="PlayAgain"
           @home-page="HomePage"
         />
-     </div>
-  </div>
+      </div>
     </div>
- 
+  </div>
 </template>
 
 <script setup>
 import { ref, computed, onBeforeUnmount, onMounted, watchEffect } from 'vue'
 import questiondata from '@/assets/questionsdb.json'
 
-import ModalQuizEnd from './ModalQuizEnd.vue' 
+import ModalQuizEnd from './ModalQuizEnd.vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -107,12 +102,13 @@ const questions = ref(shuffleArray(questiondata.questions))
 
 const currentIndex = ref(0)
 const currentQuestion = computed(() => questions.value[currentIndex.value])
+const isSubmitDisabled = computed(() => !userAnswer.value.trim())
 
 const userAnswer = ref('')
 const score = ref(0)
 const quizFinished = ref(false)
 const feedback = ref('')
-const timeLeft = ref(10) 
+const timeLeft = ref(150)
 let timerInterval = null
 const showHint = ref(false)
 
@@ -121,7 +117,6 @@ const currentPoints = ref(0)
 watchEffect(() => {
   currentPoints.value = currentQuestion.value.points
 })
-
 
 onMounted(() => {
   timerInterval = setInterval(() => {
@@ -149,7 +144,6 @@ function normalizeAnswer(text) {
     .trim()
 }
 
-
 function submitAnswer() {
   if (quizFinished.value) return
 
@@ -157,8 +151,8 @@ function submitAnswer() {
   const correctAnswers = currentQuestion.value.correctAnswer.map(normalizeAnswer)
   if (correctAnswers.includes(user)) {
     feedback.value = '✅ Σωστά!'
-    score.value = score.value + currentPoints.value 
-     showHint.value = false;
+    score.value = score.value + currentPoints.value
+    showHint.value = false
   } else {
     feedback.value = `❌ Λάθος Απαντηση!`
   }
@@ -174,11 +168,11 @@ function PlayAgain() {
   quizFinished.value = false
   userAnswer.value = ''
   feedback.value = ''
-  timeLeft.value = 120 // Επαναφορά του χρόνου σε 2 λεπτά
-  showHint.value = false;
+  timeLeft.value = 150 // Επαναφορά του χρόνου σε 2 λεπτά
+  showHint.value = false
   questions.value = shuffleArray(questions.value)
   clearInterval(timerInterval)
-  
+
   timerInterval = setInterval(() => {
     if (timeLeft.value > 0) {
       timeLeft.value--
@@ -188,8 +182,6 @@ function PlayAgain() {
   }, 1000)
 }
 
-
-
 function toggleHint() {
   showHint.value = true
   currentPoints.value -= 2
@@ -197,13 +189,13 @@ function toggleHint() {
 
 function HomePage() {
   router.push('/')
-} 
+}
 function nextQuestion() {
   userAnswer.value = ''
   feedback.value = ''
   if (currentIndex.value < questions.value.length - 1) {
     currentIndex.value++
-     showHint.value = false;
+    showHint.value = false
   } else {
     quizFinished.value = true
     clearInterval(timerInterval)
@@ -218,5 +210,4 @@ function shuffleArray(array) {
   }
   return shuffled
 }
-
 </script>
