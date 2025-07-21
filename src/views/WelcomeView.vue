@@ -30,7 +30,7 @@
             <span class="font-semibold">λαμπαρντ</span> ή <span class="font-semibold">lampard</span>
           </li>
           <li>
-            Έχεις στη διάθεσή σου <span class="font-bold">2 λεπτά</span> για να απαντήσεις όσες
+            Έχεις στη διάθεσή σου <span class="font-bold">2:30 λεπτά</span> για να απαντήσεις όσες
             περισσότερες ερωτήσεις μπορείς.
           </li>
           <li>
